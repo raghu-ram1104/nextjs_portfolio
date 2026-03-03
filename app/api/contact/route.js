@@ -23,17 +23,9 @@ export async function POST(request) {
       )
     }
 
-    // Check for Supabase environment variables
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Supabase environment variables not configured')
-      return NextResponse.json(
-        { error: 'Contact form is temporarily unavailable. Please try again later.' },
-        { status: 500 }
-      )
-    }
+    // Supabase configuration
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zxetsxreemiqmlbcnsrj.supabase.co'
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4ZXRzeHJlZW1pcW1sYmNuc3JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MzEyOTQsImV4cCI6MjA4ODEwNzI5NH0.oETa7YGDSs48Gw5P5jWEufg1nWf56qkwJ8rHSj15pcQ'
 
     // Create server-side Supabase client
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
