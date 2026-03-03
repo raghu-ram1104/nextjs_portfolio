@@ -28,10 +28,9 @@ export async function POST(request) {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Supabase env vars missing. URL:', !!supabaseUrl, 'Key:', !!supabaseServiceKey)
-      console.error('Available env keys:', Object.keys(process.env).filter(k => k.includes('SUPABASE') || k.includes('NEXT_PUBLIC')).join(', '))
+      console.error('Supabase environment variables not configured')
       return NextResponse.json(
-        { error: 'Contact form is not configured yet. Please set up database credentials.' },
+        { error: 'Contact form is temporarily unavailable. Please try again later.' },
         { status: 500 }
       )
     }
@@ -57,7 +56,7 @@ export async function POST(request) {
     if (error) {
       console.error('Supabase insert error:', error)
       return NextResponse.json(
-        { error: `Database error: ${error.message || error.code || 'Unknown error'}. Hint: ${error.hint || 'none'}` },
+        { error: 'Failed to save message. Please try again later.' },
         { status: 500 }
       )
     }
