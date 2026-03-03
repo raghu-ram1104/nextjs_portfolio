@@ -94,8 +94,8 @@ const ParticleBackground = () => {
         this.x = Math.random() * canvas.width
         this.y = Math.random() * canvas.height
         this.size = Math.random() * 2 + 0.5
-        this.speedX = (Math.random() - 0.5) * 0.5
-        this.speedY = (Math.random() - 0.5) * 0.5
+        this.speedX = (Math.random() - 0.5) * 0.4
+        this.speedY = (Math.random() - 0.5) * 0.4
         this.opacity = Math.random() * 0.5 + 0.1
       }
       update() {
@@ -114,19 +114,20 @@ const ParticleBackground = () => {
       }
     }
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 30; i++) {
       particles.push(new Particle())
     }
 
+    let frame = 0
     const connectParticles = () => {
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x
           const dy = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 150) {
+          const dist = dx * dx + dy * dy
+          if (dist < 10000) {
             ctx.beginPath()
-            ctx.strokeStyle = `rgba(6, 182, 212, ${0.08 * (1 - dist / 150)})`
+            ctx.strokeStyle = `rgba(6, 182, 212, ${0.06 * (1 - Math.sqrt(dist) / 100)})`
             ctx.lineWidth = 0.5
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
@@ -139,7 +140,8 @@ const ParticleBackground = () => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particles.forEach(p => { p.update(); p.draw() })
-      connectParticles()
+      frame++
+      if (frame % 2 === 0) connectParticles()
       animationId = requestAnimationFrame(animate)
     }
     animate()
@@ -150,7 +152,7 @@ const ParticleBackground = () => {
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" style={{ willChange: 'auto' }} />
 }
 
 // ─── Glow Card ───────────────────────────────────────────────────
@@ -163,11 +165,10 @@ const GlowCard = ({ children, className = '', glowColor = 'cyan' }) => {
   }
   return (
     <motion.div
-      whileHover={{ y: -5, scale: 1.02 }}
+      whileHover={{ y: -4, scale: 1.015 }}
       transition={{ duration: 0.3 }}
-      className={`relative overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900/50 backdrop-blur-xl shadow-2xl hover:shadow-2xl transition-all duration-500 ${colors[glowColor] || colors.cyan} ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900/60 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 ${colors[glowColor] || colors.cyan} ${className}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.03] via-transparent to-violet-500/[0.03]" />
       <div className="relative z-10">{children}</div>
     </motion.div>
   )
@@ -250,9 +251,9 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-slate-950/80 backdrop-blur-xl border-b border-cyan-500/10 shadow-lg shadow-cyan-500/5'
+            ? 'bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/10 shadow-lg shadow-cyan-500/5'
             : 'bg-transparent'
         }`}
       >
@@ -347,8 +348,8 @@ const Hero = () => {
     <motion.section id="hero" style={{ opacity, scale }}
       className="relative min-h-screen flex items-center justify-center px-6 pt-20 overflow-hidden"
     >
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] animate-float" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[120px] animate-float" style={{ animationDelay: '3s' }} />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[80px] animate-float" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[80px] animate-float" style={{ animationDelay: '3s' }} />
 
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }}
@@ -539,18 +540,13 @@ const About = () => {
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {cat.items.map((item, j) => (
-                            <motion.span
+                            <span
                               key={j}
-                              initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ delay: i * 0.06 + j * 0.04, type: 'spring', stiffness: 200 }}
-                              whileHover={{ scale: 1.12, y: -3 }}
-                              className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border shadow-sm hover:shadow-md transition-all duration-300 cursor-default ${tc.badge}`}
+                              className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border shadow-sm hover:shadow-md hover:scale-[1.08] hover:-translate-y-0.5 transition-all duration-300 cursor-default ${tc.badge}`}
                             >
                               <span className="text-sm group-hover:scale-110 transition-transform">{item.icon}</span>
                               {item.name}
-                            </motion.span>
+                            </span>
                           ))}
                         </div>
                       </div>
@@ -743,7 +739,7 @@ const Experience = () => {
             const c = colorMap[exp.color]
             return (
               <motion.div key={index} variants={fadeUp}>
-                <GlowCard glowColor={exp.color} className="p-6 h-full card-shine">
+                <GlowCard glowColor={exp.color} className="p-6 h-full">
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-16 h-16 rounded-xl bg-white border border-white/[0.08] flex items-center justify-center flex-shrink-0 overflow-hidden p-1">
                       <Image src={exp.logoUrl} alt={exp.company} width={56} height={56} className="w-full h-full object-contain"
@@ -926,7 +922,7 @@ const Certifications = () => {
             const c = colorMap[cert.color]
             return (
               <motion.div key={i} variants={scaleIn}>
-                <GlowCard glowColor={cert.color} className="p-6 text-center group h-full card-shine">
+                <GlowCard glowColor={cert.color} className="p-6 text-center group h-full">
                   <div className="relative mb-5 inline-block">
                     <div className={`w-16 h-16 mx-auto rounded-xl bg-gradient-to-br ${c.gradient} p-[2px] group-hover:scale-110 transition-transform duration-300`}>
                       <div className="w-full h-full rounded-xl bg-white flex items-center justify-center p-2">
@@ -1151,7 +1147,7 @@ const Footer = () => (
 // ─── Main Homepage ───────────────────────────────────────────────
 export default function HomePage() {
   return (
-    <div className="font-sans scroll-smooth relative grid-bg noise-overlay">
+    <div className="font-sans scroll-smooth relative grid-bg">
       <ParticleBackground />
       <div className="relative z-10">
         <Navbar />

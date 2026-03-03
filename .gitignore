@@ -39,6 +39,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# public folder (images/assets — not needed in repo)
+/public
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
