@@ -57,7 +57,7 @@ export async function POST(request) {
     if (error) {
       console.error('Supabase insert error:', error)
       return NextResponse.json(
-        { error: 'Failed to save message. Please try again later.' },
+        { error: `Database error: ${error.message || error.code || 'Unknown error'}. Hint: ${error.hint || 'none'}` },
         { status: 500 }
       )
     }
