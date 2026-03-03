@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase-config'
 
 export async function POST(request) {
   try {
@@ -23,12 +24,8 @@ export async function POST(request) {
       )
     }
 
-    // Supabase configuration
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zxetsxreemiqmlbcnsrj.supabase.co'
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4ZXRzeHJlZW1pcW1sYmNuc3JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MzEyOTQsImV4cCI6MjA4ODEwNzI5NH0.oETa7YGDSs48Gw5P5jWEufg1nWf56qkwJ8rHSj15pcQ'
-
     // Create server-side Supabase client
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
     // Insert contact message into Supabase
     const { data, error } = await supabase
